@@ -37,3 +37,31 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+export async function PATCH(req: Request) {
+  try {
+    const { alertId, status } = await req.json();
+    const alert = await prisma.emergencyAlert.update({
+      where: { id: alertId },
+      data: { status }
+    });
+    return NextResponse.json({ success: true, alert });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const alertId = searchParams.get('id');
+    if (!alertId) return NextResponse.json({ error: 'Missing alert ID' }, { status: 400 });
+    
+    await prisma.emergencyAlert.delete({
+      where: { id: alertId }
+    });
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

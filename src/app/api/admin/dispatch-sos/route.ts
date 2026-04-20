@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { prisma } from "@/lib/prisma";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -88,10 +89,14 @@ export async function POST(req: Request) {
 
     // 1. Update status in DB
     if (alertId) {
-      await supabaseAdmin
-        .from("emergency_alerts")
-        .update({ status: "RESPONDING" })
-        .eq("id", alertId);
+      try {
+        await prisma.emergencyAlert.update({
+          where: { id: alertId },
+          data: { status: "DISPATCHED" }
+        });
+      } catch (e) {
+        console.error("Prisma update failed", e);
+      }
     }
 
     // 2. Proactively tunnel to Sync Server (Port 3002) for real-time socket emit

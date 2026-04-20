@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStadium } from '@/context/StadiumContext';
 import { User, Settings, Bell, Palette, CreditCard, Shield, Camera } from 'lucide-react';
 
@@ -16,6 +16,23 @@ export const SettingsView = ({ visible }: { visible: boolean }) => {
     const [seat, setSeat] = useState(userData?.seat || "E4 / 12 / 07");
     const [dietary, setDietary] = useState(userData?.dietary || "None");
     const [isSaving, setIsSaving] = useState(false);
+
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem('stadia_nav_user_profile');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (parsed.firstName) setFirstName(parsed.firstName);
+                if (parsed.lastName) setLastName(parsed.lastName);
+                if (parsed.email) setEmail(parsed.email);
+                if (parsed.seat) setSeat(parsed.seat);
+                if (parsed.dietary) setDietary(parsed.dietary);
+                if (parsed.avatarUrl) setAvatarUrl(parsed.avatarUrl);
+            }
+        } catch (e) {
+            console.error("Local load failed", e);
+        }
+    }, []);
 
     const handleSave = async () => {
         setIsSaving(true);
@@ -33,6 +50,9 @@ export const SettingsView = ({ visible }: { visible: boolean }) => {
                     dietaryPreference: dietary
                 })
             });
+            localStorage.setItem('stadia_nav_user_profile', JSON.stringify({
+                firstName, lastName, email, seat, dietary, avatarUrl
+            }));
             alert("Meta Details Secured in Database");
         } catch (e) {
             console.error("Save failed", e);

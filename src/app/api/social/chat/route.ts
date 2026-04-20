@@ -36,3 +36,31 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+export async function PATCH(req: Request) {
+  try {
+    const { messageId, flags } = await req.json();
+    const updated = await prisma.chatMessage.update({
+      where: { id: messageId },
+      data: { flags }
+    });
+    return NextResponse.json({ success: true, message: updated });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const messageId = searchParams.get('id');
+    if (!messageId) return NextResponse.json({ error: 'Missing message ID' }, { status: 400 });
+    
+    await prisma.chatMessage.delete({
+      where: { id: messageId }
+    });
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

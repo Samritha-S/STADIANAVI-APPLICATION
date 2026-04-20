@@ -11,6 +11,13 @@ export const FanZoneView = ({ visible }: { visible: boolean }) => {
     const [useFallback, setUseFallback] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [isMobile, setIsMobile] = useState(false);
+    const [cameraMode, setCameraMode] = useState<"user" | "environment">("user");
+
+    useEffect(() => {
+        setIsMobile(/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
+    }, []);
+
     const [chatMsg, setChatMsg] = useState("");
     const [chats, setChats] = useState<{user: string, text: string, time: string}[]>([
         { user: "Sachin_Fan", text: "What a shot! 🏏", time: "19:02" },
@@ -22,7 +29,9 @@ export const FanZoneView = ({ visible }: { visible: boolean }) => {
         setIsBooting(true);
         await new Promise(r => setTimeout(r, 1500));
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: isMobile ? { facingMode: cameraMode } : true 
+            });
             if (videoRef.current) videoRef.current.srcObject = stream;
             setIsCapturing(true);
             setUseFallback(false);
@@ -60,8 +69,10 @@ export const FanZoneView = ({ visible }: { visible: boolean }) => {
 
         addPoints?.(50);
         
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream.getTracks().forEach(track => track.stop());
+        if (!useFallback && videoRef.current?.srcObject) {
+            const stream = videoRef.current.srcObject as MediaStream;
+            stream.getTracks().forEach(track => track.stop());
+        }
         setIsCapturing(false);
         alert("Fan Gesture Uploaded! +50 Loyalty Points awarded.");
     };
@@ -114,8 +125,22 @@ export const FanZoneView = ({ visible }: { visible: boolean }) => {
     ];
 
     useEffect(() => {
-        // Scroll chat to bottom effect could go here
-    }, [chats]);
+        const fetchChats = async () => {
+            try {
+                const res = await fetch('/api/social/chat');
+                const data = await res.json();
+                if (Array.isArray(data)) {
+                    // Map backend schema (userName) to frontend state (user)
+                    setChats(data.map(d => ({ user: d.userName, text: d.text, time: d.time })));
+                }
+            } catch (e) {
+                console.error("Failed to fetch fast chat sync");
+            }
+        };
+        fetchChats();
+        const iv = setInterval(fetchChats, 5000);
+        return () => clearInterval(iv);
+    }, []);
 
     if (!visible) return null;
 
@@ -146,9 +171,12 @@ export const FanZoneView = ({ visible }: { visible: boolean }) => {
                                 <div className="w-full aspect-video bg-white/[0.02] border border-white/10 rounded-3xl flex flex-col items-center justify-center gap-6 overflow-hidden relative">
                                     <div className="absolute inset-0 bg-gradient-to-t from-[var(--accent-20)] to-transparent opacity-20" />
                                     <div className="relative">
-                                        <div className="w-24 h-24 border-4 border-white/5 rounded-full border-t-[var(--accent)] animate-spin" />
+                                        <div className="w-28 h-28 border-4 border-white/5 rounded-full border-t-[var(--accent)] animate-[spin_3s_cubic-bezier(0.4,0,0.2,1)_infinite]" />
                                         <div className="absolute inset-0 flex items-center justify-center">
-                                            <div className="w-12 h-12 border-2 border-white/10 rounded-full border-b-red-500 animate-[spin_1s_linear_infinite_reverse]" />
+                                            <div className="w-16 h-16 border-2 border-white/10 rounded-full border-b-[var(--accent)] animate-[spin_2s_cubic-bezier(0.2,0.8,0.2,1)_infinite_reverse]" />
+                                        </div>
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="w-8 h-8 rounded-full bg-[var(--accent)]/30 animate-ping" />
                                         </div>
                                     </div>
                                     <div className="text-center z-10">
@@ -163,6 +191,24 @@ export const FanZoneView = ({ visible }: { visible: boolean }) => {
                                         <p className="text-xs font-bold text-white mb-2">Initialize Stadium Cam</p>
                                         <p className="text-[10px] uppercase tracking-widest opacity-50 italic">Share your jersey & cheer</p>
                                     </div>
+                                    
+                                    {isMobile && (
+                                        <div className="flex gap-2.5 mt-2 bg-black/60 p-1.5 rounded-xl border border-white/5">
+                                            <button 
+                                                onClick={() => setCameraMode('user')} 
+                                                className={`px-4 py-2 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all ${cameraMode === 'user' ? 'bg-[var(--accent)] text-black' : 'text-white/40 hover:text-white'}`}
+                                            >
+                                                Front Cam
+                                            </button>
+                                            <button 
+                                                onClick={() => setCameraMode('environment')} 
+                                                className={`px-4 py-2 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all ${cameraMode === 'environment' ? 'bg-[var(--accent)] text-black' : 'text-white/40 hover:text-white'}`}
+                                            >
+                                                Back Cam
+                                            </button>
+                                        </div>
+                                    )}
+
                                     <button 
                                         onClick={startCamera}
                                         style={{ backgroundColor: accentColor }}

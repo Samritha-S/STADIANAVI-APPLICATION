@@ -118,20 +118,6 @@ const AppContent = () => {
                         <SocialSidebar buttonColor="#FFFF00" iconColor="black" />
                         <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-1 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[10px] font-black uppercase tracking-widest text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Fan Connect</span>
                     </div>
-
-
-
-                    {/* SOS - Red */}
-                    <div className="group relative">
-                        <button 
-                            onClick={() => setSosOpen(true)} 
-                            className="w-14 h-14 bg-red-600 hover:bg-red-500 text-white rounded-2xl flex items-center justify-center shadow-xl border border-red-400 group-hover:scale-110 transition-all"
-                        >
-                            <div className="absolute inset-0 bg-red-600 rounded-2xl animate-ping opacity-10" />
-                            <AlertTriangle size={28} className="relative z-10" />
-                        </button>
-                        <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-1 bg-red-600/90 backdrop-blur-md border border-red-400 rounded-lg text-[10px] font-black uppercase tracking-widest text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Emergency SOS</span>
-                    </div>
                 </div>
             )}
 

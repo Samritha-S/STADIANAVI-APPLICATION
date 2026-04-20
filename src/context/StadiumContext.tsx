@@ -194,12 +194,8 @@ export const StadiumProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [isEmergency, setIsEmergency] = useState(false);
   const [accentColor, setAccentColor] = useState('#00f2ff');
   const [pollData, setPollData] = useState<PollData>({
-      question: "Who will hit the next six?",
-      options: [
-          { id: 'opt1', label: 'Rohit Sharma', votes: 1420 },
-          { id: 'opt2', label: 'Ishan Kishan', votes: 850 },
-          { id: 'opt3', label: 'Suryakumar Yadav', votes: 2310 }
-      ]
+      question: "Loading...",
+      options: []
   });
   
   const [matchData, setMatchData] = useState<MatchData | null>({
@@ -267,6 +263,23 @@ export const StadiumProvider: React.FC<{ children: React.ReactNode }> = ({ child
             (err) => console.log("[Geo] Location Denied/Error", err)
         );
     }
+    
+    // Fetch Poll Data from Backend
+    const initPoll = async () => {
+        try {
+            const res = await fetch('/api/social/poll');
+            const data = await res.json();
+            if (data.success && data.poll) {
+                setPollData({
+                    question: data.poll.question,
+                    options: data.poll.options
+                });
+            }
+        } catch (e) {
+            console.error("Poll load failed", e);
+        }
+    };
+    initPoll();
   }, []);
 
   const login = async (data: any) => {
@@ -505,8 +518,7 @@ export const StadiumProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       if (userData?.id) {
           try {
-              const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://127.0.0.1:3002";
-              await fetch(`${socketUrl}/api/fan/vote`, {
+              await fetch(`/api/social/poll/vote`, {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ optionId, userId: userData.id })

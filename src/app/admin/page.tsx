@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { StadiumProvider, useStadium } from '@/context/StadiumContext';
 
 // --------------- Data & Types ---------------
-type NavTab = 'overview' | 'cctv' | 'sos' | 'orders' | 'heatmap' | 'services' | 'social' | 'routing' | 'engagement';
+type NavTab = 'overview' | 'cctv' | 'sos' | 'orders' | 'heatmap' | 'services' | 'social' | 'routing';
 
 interface SosAlert {
   id: string;
@@ -25,7 +25,7 @@ interface SosAlert {
   seatLabel?: string;
 }
 interface SocialPost {
-  id: number; user: string; msg: string; flags: number;
+  id: string; userName: string; text: string; flags: number; time: string;
 }
 interface Section {
   id: string; active: boolean;
@@ -115,8 +115,8 @@ const OverviewView = ({ sosAlerts, socialFeed }: { sosAlerts: SosAlert[]; social
                   <span className="text-[9px] font-black text-yellow-400">{f.flags}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[10px] font-bold text-white/50">{f.user}</div>
-                  <div className="text-xs text-white truncate">{f.msg}</div>
+                  <div className="text-[10px] font-bold text-white/50">{f.userName}</div>
+                  <div className="text-xs text-white truncate">{f.text}</div>
                 </div>
               </div>
             ))}
@@ -235,44 +235,71 @@ const HeatmapView = () => (
 );
 
 // SOS Tab
-const SOSView = ({ sosAlerts, setSosAlerts, handleDispatch }: { sosAlerts: SosAlert[]; setSosAlerts: React.Dispatch<React.SetStateAction<SosAlert[]>>; handleDispatch: (alertId: string, userId: string, seatLabel?: string) => Promise<void> }) => (
-  <div className="space-y-4">
-    {sosAlerts.length === 0 && (
-      <div className="flex flex-col items-center justify-center py-20 text-white/20">
-        <CheckCircle size={48} className="mb-4" />
-        <p className="font-black uppercase tracking-widest text-sm">No Active Alerts</p>
+const SOSView = ({ sosAlerts, handleDispatch, handleResolve, handleClear }: { sosAlerts: SosAlert[]; handleDispatch: (alertId: string, userId: string, seatLabel?: string) => Promise<void>; handleResolve: (alertId: string) => Promise<void>; handleClear: (alertId: string) => Promise<void>; }) => {
+  const [filter, setFilter] = useState<'active' | 'resolved'>('active');
+  const filteredAlerts = filter === 'active' 
+      ? sosAlerts.filter(a => a.status === 'Active' || a.status === 'Dispatched')
+      : sosAlerts.filter(a => a.status === 'Resolved');
+
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-2 border-b border-white/10 pb-4 mb-4">
+          <button 
+             onClick={() => setFilter('active')}
+             className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${filter === 'active' ? 'bg-[#00f2ff]/20 text-[#00f2ff] border border-[#00f2ff]/30' : 'text-white/40 hover:text-white/70 bg-transparent border border-transparent'}`}
+          >
+             Live Feed ({sosAlerts.filter(a => a.status === 'Active' || a.status === 'Dispatched').length})
+          </button>
+          <button 
+             onClick={() => setFilter('resolved')}
+             className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${filter === 'resolved' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-white/40 hover:text-white/70 bg-transparent border border-transparent'}`}
+          >
+             Resolved Log ({sosAlerts.filter(a => a.status === 'Resolved').length})
+          </button>
       </div>
-    )}
-    {sosAlerts.map(alert => (
-      <div key={alert.id} className={`border rounded-2xl p-6 ${alert.status === 'Active' ? 'bg-red-950/30 border-red-600/50 shadow-[0_0_30px_rgba(220,38,38,0.15)]' : alert.status === 'Dispatched' ? 'bg-yellow-950/20 border-yellow-600/30' : 'bg-white/[0.02] border-white/10'}`}>
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            {alert.status === 'Active' && <span className="w-3 h-3 bg-red-500 rounded-full animate-ping shrink-0" />}
-            <span className={`text-xs px-3 py-1 rounded-full font-black uppercase ${alert.status === 'Active' ? 'bg-red-600 text-white' : alert.status === 'Dispatched' ? 'bg-yellow-600/40 text-yellow-300' : 'bg-white/10 text-white/40'}`}>{alert.status}</span>
-            <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">{alert.id}</span>
+
+      {filteredAlerts.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-20 text-white/20">
+          <CheckCircle size={48} className="mb-4" />
+          <p className="font-black uppercase tracking-widest text-sm text-center">No {filter === 'active' ? 'Active Alerts' : 'Resolved Logs'} Found</p>
+        </div>
+      )}
+      {filteredAlerts.map(alert => (
+        <div key={alert.id} className={`border rounded-2xl p-6 relative overflow-hidden bg-[#0D0D0F] ${alert.status === 'Active' ? 'shadow-[0_0_15px_rgba(220,38,38,0.2)] border-red-500/30' : alert.status === 'Dispatched' ? 'border-yellow-600/30' : 'border-white/[0.08]'}`}>
+          {alert.status === 'Resolved' && <div className="absolute inset-0 bg-emerald-950/10 pointer-events-none" />}
+          <div className="flex items-start justify-between mb-4 relative z-10">
+            <div className="flex items-center gap-3">
+              {alert.status === 'Active' && <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-ping shrink-0 shadow-[0_0_8px_#ef4444]" />}
+              <span className={`text-[10px] px-3 py-1 rounded-md font-black uppercase tracking-widest ${alert.status === 'Active' ? 'bg-red-600/20 text-red-500 border border-red-500/30' : alert.status === 'Dispatched' ? 'bg-yellow-600/20 text-yellow-400 border border-yellow-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}>{alert.status}</span>
+              <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">{alert.id}</span>
+            </div>
+            <span className="text-[10px] text-white/30 font-bold tabular-nums">{alert.time}</span>
           </div>
-          <span className="text-[10px] text-white/30">{alert.time}</span>
+          <div className="mb-1 text-base font-black text-white relative z-10">{alert.user}</div>
+          <div className="text-sm font-bold opacity-80 italic mb-5 px-4 py-2 rounded-lg relative z-10" style={{ backgroundColor: alert.status === 'Resolved' ? 'rgba(16,185,129,0.1)' : 'rgba(220,38,38,0.1)', color: alert.status === 'Resolved' ? '#a7f3d0' : '#fecaca' }}>"{alert.reason}"</div>
+          <div className="flex gap-3 relative z-10">
+            {filter === 'active' && (
+              <>
+                <button onClick={() => handleDispatch(alert.id, alert.userId || 'unknown', alert.seatLabel)}
+                  className="flex-1 py-3 bg-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest text-white hover:bg-red-500 transition-all shadow-lg shadow-red-600/30">
+                  Dispatch Unit
+                </button>
+                <button onClick={() => handleResolve(alert.id)}
+                  className="flex-1 py-3 border border-emerald-500/40 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-400 hover:bg-emerald-500/10 transition-all">
+                  Mark Resolved
+                </button>
+              </>
+            )}
+            <button onClick={() => handleClear(alert.id)}
+              className={`${filter === 'resolved' ? 'flex-1' : 'px-6'} py-3 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-white/40 hover:bg-white/5 hover:text-white transition-all`}>
+              Delete Log
+            </button>
+          </div>
         </div>
-        <div className="mb-1 text-base font-black text-white">{alert.user}</div>
-        <div className="text-sm text-red-200 italic mb-5 bg-red-900/20 px-4 py-2 rounded-lg">"{alert.reason}"</div>
-        <div className="flex gap-3">
-          <button onClick={() => handleDispatch(alert.id, alert.userId || 'unknown', alert.seatLabel)}
-            className="flex-1 py-2.5 bg-red-600 rounded-xl text-xs font-black uppercase text-white hover:bg-red-500 transition-all shadow-lg shadow-red-600/30">
-            Dispatch Unit
-          </button>
-          <button onClick={() => setSosAlerts(prev => prev.map(a => a.id === alert.id ? { ...a, status: 'Resolved' } : a))}
-            className="flex-1 py-2.5 border border-emerald-500/40 rounded-xl text-xs font-black uppercase text-emerald-400 hover:bg-emerald-500/10 transition-all">
-            Mark Resolved
-          </button>
-          <button onClick={() => setSosAlerts(prev => prev.filter(a => a.id !== alert.id))}
-            className="px-4 py-2.5 border border-white/10 rounded-xl text-xs font-black uppercase text-white/30 hover:bg-white/5 transition-all">
-            Clear
-          </button>
-        </div>
-      </div>
-    ))}
-  </div>
-);
+      ))}
+    </div>
+  );
+};
 
 // Services Tab
 const ServicesView = ({ handleDispatch }: { handleDispatch: (id: string, userId: string, seatLabel?: string) => void }) => {
@@ -326,29 +353,35 @@ const ServicesView = ({ handleDispatch }: { handleDispatch: (id: string, userId:
 };
 
 // Social Tab
-const SocialView = ({ socialFeed, setSocialFeed }: { socialFeed: SocialPost[]; setSocialFeed: React.Dispatch<React.SetStateAction<SocialPost[]>> }) => (
+const SocialView = ({ socialFeed, handleNotifyUser, handleDeletePost }: { socialFeed: SocialPost[]; handleNotifyUser: (id: string, currentFlags: number) => Promise<void>; handleDeletePost: (id: string) => Promise<void>; }) => (
   <div className="space-y-4">
+    {socialFeed.length === 0 && (
+      <div className="flex flex-col items-center justify-center py-20 text-white/20">
+        <CheckCircle size={48} className="mb-4" />
+        <p className="font-black uppercase tracking-widest text-sm">Clean Feed</p>
+      </div>
+    )}
     {socialFeed.map(feed => (
       <div key={feed.id} className={`border rounded-2xl p-5 relative ${feed.flags > 2 ? 'bg-yellow-950/20 border-yellow-600/30' : 'bg-[#0D0D0F] border-white/[0.08]'}`}>
         {feed.flags > 0 && (
-          <div className="absolute -top-2 -right-2 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-lg">
+          <div className="absolute -top-2 -right-2 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-lg border border-red-500">
             {feed.flags} {feed.flags === 1 ? 'Flag' : 'Flags'}
           </div>
         )}
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-black text-white">{feed.user}</span>
+          <span className="text-sm font-black text-white">{feed.userName}</span>
           <div className="flex gap-2">
-            <button onClick={() => alert(`Warning sent to ${feed.user}`)} 
+            <button onClick={() => handleNotifyUser(feed.id, feed.flags)} 
               className="flex items-center gap-1.5 text-[10px] font-black uppercase px-3 py-1.5 rounded-lg bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20 transition-all">
-              <Megaphone size={11} /> Notify User
+              <Megaphone size={11} /> Flag
             </button>
-            <button onClick={() => setSocialFeed(prev => prev.filter(f => f.id !== feed.id))} 
+            <button onClick={() => handleDeletePost(feed.id)} 
               className="flex items-center gap-1.5 text-[10px] font-black uppercase px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all">
               <Trash2 size={11} /> Delete
             </button>
           </div>
         </div>
-        <p className="text-sm text-white/70">{feed.msg}</p>
+        <p className="text-sm text-white/70">{feed.text}</p>
       </div>
     ))}
   </div>
@@ -394,11 +427,11 @@ const RoutingView = ({ sections, setSections }: { sections: Section[]; setSectio
 const OrdersView = ({ orders, setOrders }: { orders: Order[]; setOrders: React.Dispatch<React.SetStateAction<Order[]>> }) => {
   const handleStatusUpdate = async (orderId: string, userId: string, newStatus: string) => {
     try {
-      // 1. Update Database & Notify Socket Server
-      const res = await fetch('http://localhost:3002/api/admin/update-order-status', {
-        method: 'POST',
+      // 1. Update Database
+      const res = await fetch('/api/admin/orders', {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId, userId, status: newStatus })
+        body: JSON.stringify({ id: orderId, status: newStatus })
       });
       
       if (res.ok) {
@@ -460,15 +493,15 @@ const OrdersView = ({ orders, setOrders }: { orders: Order[]; setOrders: React.D
               <div className="flex flex-col gap-2 shrink-0">
                 <div className="text-[9px] font-black uppercase text-white/20 tracking-widest mb-1">Update Status</div>
                 <select 
-                    value={order.status}
+                    value={order.status.toUpperCase()}
                     onChange={(e) => handleStatusUpdate(order.id, (order as any).userId || 'user-1', e.target.value)}
                     className="bg-black/40 border border-white/10 rounded-lg px-2 py-1 text-[10px] text-white focus:outline-none focus:border-[#00f2ff]/50"
                   >
-                    <option value="Pending">Pending</option>
-                    <option value="Preparing">Preparing</option>
-                    <option value="Delivering">Delivering</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Cancelled">Cancelled</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="PREPARING">Preparing</option>
+                    <option value="DELIVERING">Delivering</option>
+                    <option value="DELIVERED">Delivered</option>
+                    <option value="CANCELLED">Cancelled</option>
                   </select>
               </div>
             </div>
@@ -478,39 +511,6 @@ const OrdersView = ({ orders, setOrders }: { orders: Order[]; setOrders: React.D
     </div>
   );
 };
-
-const EngagementView = ({ logins }: { logins: any[] }) => (
-    <div className="space-y-6">
-        <div className="grid grid-cols-4 gap-4">
-            <div className="bg-white/[0.02] border border-white/5 p-6 rounded-3xl">
-                <div className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Total Demo Fans</div>
-                <div className="text-3xl font-black text-[#00f2ff]">{new Set(logins.map(l => l.userId)).size}</div>
-            </div>
-            <div className="bg-white/[0.02] border border-white/5 p-6 rounded-3xl">
-                <div className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Guest Logins</div>
-                <div className="text-3xl font-black text-white/80">{logins.filter(l => l.userId.includes('guest')).length}</div>
-            </div>
-        </div>
-        <SectionPanel title="Live Activity Feed">
-            <div className="space-y-3">
-                {logins.map((log, i) => (
-                    <div key={i} className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl flex items-center justify-between animate-in slide-in-from-right duration-500">
-                        <div className="flex items-center gap-4">
-                            <div className="w-8 h-8 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-black text-[10px]">
-                                {log.userName?.charAt(0) || 'G'}
-                            </div>
-                            <div>
-                                <div className="text-xs font-black">{log.userName || 'Guest User'}</div>
-                                <div className="text-[9px] text-white/30 uppercase tracking-[0.2em]">{log.event || 'LOCATION_SYNC'} — {log.userId}</div>
-                            </div>
-                        </div>
-                        <div className="text-[9px] text-white/20 font-mono italic">JUST NOW</div>
-                    </div>
-                )).reverse()}
-            </div>
-        </SectionPanel>
-    </div>
-);
 
 // --------------- Main Dashboard ---------------
 const NerveCentreDashboard = () => {
@@ -609,11 +609,58 @@ const NerveCentreDashboard = () => {
         clearInterval(sosPolling);
       };
   }, []);
-  const [socialFeed, setSocialFeed] = useState<SocialPost[]>([
-    { id: 1, user: 'AngryFan99', msg: 'This is the worst match ever!', flags: 2 },
-    { id: 2, user: 'BlueArmy', msg: 'MI winning this one easily!', flags: 0 },
-    { id: 3, user: 'Bot_003', msg: 'Spam link here: bit.ly/1234', flags: 5 },
-  ]);
+  const handleResolve = async (alertId: string) => {
+     try {
+       await fetch('/api/admin/sos-alert', {
+         method: 'PATCH',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ alertId, status: 'RESOLVED' })
+       });
+       setSosAlerts(prev => prev.map(a => a.id === alertId ? { ...a, status: 'Resolved' } : a));
+     } catch (e) { console.error("SOS Resolve failed", e); }
+  };
+
+  const handleClear = async (alertId: string) => {
+     try {
+       await fetch(`/api/admin/sos-alert?id=${alertId}`, { method: 'DELETE' });
+       setSosAlerts(prev => prev.filter(a => a.id !== alertId));
+     } catch (e) { console.error("SOS Clear failed", e); }
+  };
+
+  const [socialFeed, setSocialFeed] = useState<SocialPost[]>([]);
+
+  useEffect(() => {
+    const fetchSocial = async () => {
+      try {
+        const res = await fetch('/api/social/chat');
+        const data = await res.json();
+        if (Array.isArray(data)) setSocialFeed(data);
+      } catch (e) { console.error("Fetch social failed", e); }
+    };
+    fetchSocial();
+    const interval = setInterval(fetchSocial, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleNotifyUser = async (id: string, currentFlags: number) => {
+      try {
+        await fetch('/api/social/chat', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messageId: id, flags: currentFlags + 1 })
+        });
+        setSocialFeed(prev => prev.map(f => f.id === id ? { ...f, flags: f.flags + 1 } : f));
+      } catch (e) { console.error("Notify user failed", e); }
+  };
+
+  const handleDeletePost = async (id: string) => {
+      try {
+        await fetch(`/api/social/chat?id=${id}`, { method: 'DELETE' });
+        setSocialFeed(prev => prev.filter(f => f.id !== id));
+        // Real-time deletion broadcast if possible, but interval will catch it
+      } catch (e) { console.error("Delete post failed", e); }
+  };
+
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
@@ -640,7 +687,6 @@ const NerveCentreDashboard = () => {
     { tab: 'orders', label: 'Live Orders', icon: <ShoppingBag size={16} />, badge: orders.filter(o => o.status === 'PENDING').length, badgeColor: '#4f46e5' },
     { tab: 'services', label: 'Services', icon: <Utensils size={16} /> },
     { tab: 'social', label: 'Social Mod', icon: <MessageSquare size={16} />, badge: flaggedPosts, badgeColor: '#ca8a04' },
-    { tab: 'engagement', label: 'Engagement', icon: <Users size={16} /> },
     { tab: 'routing', label: 'Routing', icon: <GitBranch size={16} /> },
   ];
 
@@ -652,8 +698,7 @@ const NerveCentreDashboard = () => {
     orders: 'Live Seat Delivery Orders',
     services: 'Service Monitoring',
     social: 'Social Moderation Feed',
-    routing: 'NavMesh Routing Overrides',
-    engagement: 'Fan Engagement Meta'
+    routing: 'NavMesh Routing Overrides'
   };
 
   return (
@@ -780,11 +825,10 @@ const NerveCentreDashboard = () => {
           {activeTab === 'overview' && <OverviewView sosAlerts={sosAlerts} socialFeed={socialFeed} />}
           {activeTab === 'cctv' && <CCTVView />}
           {activeTab === 'heatmap' && <HeatmapView />}
-          {activeTab === 'sos' && <SOSView sosAlerts={sosAlerts} setSosAlerts={setSosAlerts} handleDispatch={handleDispatch} />}
+          {activeTab === 'sos' && <SOSView sosAlerts={sosAlerts} handleDispatch={handleDispatch} handleResolve={handleResolve} handleClear={handleClear} />}
           {activeTab === 'orders' && <OrdersView orders={orders} setOrders={setOrders} />}
           {activeTab === 'services' && <ServicesView handleDispatch={handleDispatch} />}
-          {activeTab === 'social' && <SocialView socialFeed={socialFeed} setSocialFeed={setSocialFeed} />}
-          {activeTab === 'engagement' && <EngagementView logins={logins} />}
+          {activeTab === 'social' && <SocialView socialFeed={socialFeed} handleNotifyUser={handleNotifyUser} handleDeletePost={handleDeletePost} />}
           {activeTab === 'routing' && <RoutingView sections={sections} setSections={setSections} />}
         </main>
       </div>

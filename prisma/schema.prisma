@@ -172,5 +172,6 @@ model ChatMessage {
   userName  String
   text      String
   time      String
+  flags     Int      @default(0)
   createdAt DateTime @default(now())
 }
