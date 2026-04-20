@@ -161,7 +161,7 @@ export const FanZoneView = ({ visible }: { visible: boolean }) => {
 
                 <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
                     {/* LEFT PANEL: Media & Cam */}
-                    <div className="p-8 border-r border-white/5 flex flex-col gap-8 overflow-y-auto custom-scrollbar">
+                    <div className="p-8 border-r border-white/5 flex flex-col gap-8 overflow-y-auto scroll-smooth custom-scrollbar" style={{ willChange: 'scroll-position' }}>
                         <section>
                             <h3 className="text-[10px] font-black uppercase text-white/30 tracking-[0.2em] mb-6 flex items-center gap-2">
                                 <div className="w-1 h-1 bg-[var(--accent)] rounded-full" />

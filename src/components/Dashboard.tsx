@@ -111,12 +111,6 @@ export const Dashboard = () => {
                         </div>
                     </div>
 
-                    <button 
-                        onClick={() => setSosOpen(true)}
-                        className="p-2.5 bg-red-600/10 border border-red-600/20 rounded-full text-red-500 hover:bg-red-600 hover:text-white transition-all shadow-lg active:scale-95"
-                    >
-                        <ShieldAlert size={18} />
-                    </button>
 
                     {/* Desktop Menu */}
                     <nav className="hidden lg:flex gap-1 bg-black/80 p-1.5 rounded-full border border-white/10">

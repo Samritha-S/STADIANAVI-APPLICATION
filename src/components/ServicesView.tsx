@@ -34,14 +34,14 @@ export const ServicesView = ({ visible }: { visible: boolean }) => {
                             <div>
                                 <h2 className="text-3xl font-black uppercase tracking-tighter text-white leading-none">Services</h2>
                                 <div className="flex items-center gap-2 mt-2">
-                                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_#10b981]" />
+                                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_#10b981]" style={{ willChange: 'opacity' }} />
                                     <p className="text-[9px] uppercase font-black text-white/40 tracking-[0.3em]">Operational Nodes Optimized</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-10 custom-scrollbar relative">
+                    <div className="flex-1 overflow-y-auto scroll-smooth p-6 md:p-8 space-y-10 custom-scrollbar relative" style={{ willChange: 'scroll-position' }}>
                         {/* Food Stalls */}
                         <section>
                             <div className="flex items-center justify-between mb-6">
@@ -121,7 +121,7 @@ export const ServicesView = ({ visible }: { visible: boolean }) => {
                                     >
                                         <h4 className="text-[13px] font-black text-white uppercase tracking-tighter mb-2 group-hover:text-emerald-400 transition-colors">{wc.name}</h4>
                                         <div className="flex items-center gap-2">
-                                            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_#10b981]" />
+                                            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_#10b981]" style={{ willChange: 'opacity' }} />
                                             <span className="text-[9px] text-emerald-500 uppercase font-black tracking-widest">Operational</span>
                                         </div>
                                     </div>
