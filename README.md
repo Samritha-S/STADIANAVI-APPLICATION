@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# StadiaNav: The Arena Digital Twin
 
-## Getting Started
+**Live URL**: [https://stadianav-digital-twin.vercel.app](https://stadianav-digital-twin.vercel.app)
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🏗️ 1. Chosen Vertical: Smart Venue & Arena Management
+StadiaNav is a high-performance **Digital Twin** platform designed to solve the "Black Box" problem of massive live events. Typically, stadium operators have no real-time spatial awareness of crowd flow, and fans have no way to navigate complex tiers efficiently. StadiaNav bridges this gap.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 2. Approach and Logic
+Our approach focused on **Situational Intelligence**—transforming static 3D models into live, reactive environments.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Core Architecture:
+- **Spatial UI**: Built with `React Three Fiber`, using absolute world-space coordinates to map every stall, seat, and security post.
+- **Occlusion Culling**: Implemented a custom proximity-based rendering logic where UI markers and HTML overlays disable themselves if they are behind the stadium mesh or too far from the camera, keeping performance at 60FPS even with hundreds of entities.
+- **Nerve Centre (Admin)**: A dedicated command hub that simulates CCTV ingestion. It converts raw crowd counts into actionable "Queue Intelligence" using the formula:
+  `Wait Time (mins) = (Fan Count × 45s Service Avg) / 2 Registers`.
+- **The Sync Engine**: A Node.js socket server that broadcasts these calculated wait times to all fan devices instantly, allowing for "Dynamic Wayfinding" (rerouting fans to shorter lines).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧠 3. How the Solution Works
+1. **Onboarding**: Fans register with their seat number, which anchors them in the 3D space.
+2. **Real-time Monitoring**: The Admin Hub performs "CV Scans" (simulated multi-modal analysis). These results update a central PostgreSQL database.
+3. **Reactive UI**: The Fan App receives an immediate WebSocket ping. The 3D map highlights stalls in Green, Amber, or Red based on wait times.
+4. **Emergency Bridge**: If a fan hits the SOS button, their exact 3D coordinates are dispatched to the nearest security/medical unit centroid using Euclidean distance calculations.
 
-## Learn More
+## 🤖 4. Gemini Situational Intelligence
+We didn't just add a chatbot; we built a **Spatial Engine**. 
+- When a fan asks the "Gemini Concierge" for food advice, the system quietly injects their **3D coordinates** and **real-time stadium metrics** into the prompt.
+- **Result**: Gemini doesn't just say "Go to Stall 1"; it says "Go to Wow! Momo, it's 12 meters to your left and has a 3-minute wait, compared to Blue Tokai which is 50 meters away."
 
-To learn more about Next.js, take a look at the following resources:
+## 📝 5. Technical Assumptions
+- **CCTV Availability**: We assume a base level of computer vision processing is available at stall entry points to provide crowd counts.
+- **Device Support**: The application assumes a WebGL2 compatible browser for the 3D Digital Twin experience.
+- **Database**: We chose **Neon (PostgreSQL)** to handle high-concurrency real-time location history writes without latency spikes.
+- **Connectivity**: We assume stadium-wide Wi-Fi or 5G to maintain the WebSocket heartbeat for the Sync Engine.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Created as part of the Advanced Agentic Coding Challenge.*

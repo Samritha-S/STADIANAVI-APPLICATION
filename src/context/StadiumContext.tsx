@@ -161,6 +161,7 @@ interface StadiumContextType {
 }
 
 export interface OnboardingData {
+  id?: string;
   stand?: string;
   level?: string;
   block?: string;
@@ -169,6 +170,14 @@ export interface OnboardingData {
   phone?: string;
   position?: [number, number, number];
   guest?: boolean;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  avatarUrl?: string;
+  loyaltyPoints?: number;
+  dietaryPreference?: string;
+  dietary?: string;
+  notificationSettings?: string;
   name?: string;
 }
 

@@ -18,7 +18,8 @@ export async function POST(req: Request) {
       },
       create: {
         phone: phone || `guest-${Math.random().toString(36).slice(2, 10)}`,
-        name: 'Prototype Fan',
+        firstName: 'Prototype',
+        lastName: 'Fan',
         loyaltyPoints: amount
       }
     });
