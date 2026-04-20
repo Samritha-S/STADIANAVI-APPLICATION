@@ -1,26 +1,84 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* DEFAULT: STEALTH DARK */
+    --background: #0A0A0B;
+    --surface: #141416;
+    --border: #232326;
+    --foreground: #FFFFFF;
+    --secondary: #71717A;
+    --danger: #B91C1C;
+    --accent-primary: #FFFFFF;
+  }
+
+  [data-theme='light'] {
+    --background: #F1F5F9;
+    --surface: #FFFFFF;
+    --border: #E2E8F0;
+    --foreground: #0F172A;
+    --secondary: #64748B;
+    --accent-primary: #0F172A;
+  }
+
+  body {
+    background-color: var(--background) !important;
+    color: var(--foreground);
+    font-family: var(--font-rajdhani), sans-serif;
+    @apply antialiased transition-colors duration-300;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.stealth-card {
+  @apply bg-[var(--surface)] border border-[var(--border)] transition-all duration-200;
 }
+
+.stealth-card:hover {
+  @apply border-[var(--secondary)];
+}
+
+.uppercase-header {
+  @apply uppercase tracking-[0.1em] font-black leading-none;
+}
+
+.team-logo-tile {
+  @apply w-20 h-20 rounded-xl bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center cursor-pointer transition-all;
+}
+
+.team-logo-tile.active {
+  @apply border-[4px] border-[var(--accent-primary)];
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; filter: blur(20px); }
+  50% { opacity: 0.8; filter: blur(40px); }
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: rgba(255, 255, 255, 0.1); }
+  50% { border-color: rgba(239, 68, 68, 0.5); box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 2px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+

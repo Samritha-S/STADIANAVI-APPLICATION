@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+
+
+model User {
+  id              String         @id @default(uuid())
+  phone           String         @unique
+  firstName       String?
+  lastName        String?
+  email           String?        @unique
+  avatarUrl       String?
+  assignedSeatId  String?        // Link to Seat.label
+  loyaltyPoints   Int            @default(0)
+  isActive        Boolean        @default(true)
+  dietaryPreference String?      @default("None")
+  notificationSettings String?   // JSON string: { sos: bool, order: bool, social: bool, match: bool }
+  createdAt       DateTime       @default(now())
+  
+  // Real-time location
+  currentLocation Location?
+  locationHistory LocationHistory[]
+
+  // Social Graph
+  sentRequests     SocialGraph[] @relation("SentRequests")
+  receivedRequests SocialGraph[] @relation("ReceivedRequests")
+  
+  // Navigation Persistence
+  navState        NavigationState?
+}
+
+// ... existing Seat, Location, etc. ...
+
+model EmergencyAlert {
+  id              String   @id @default(uuid())
+  userId          String
+  userName        String
+  seatLabel       String
+  reason          String
+  status          String   @default("ACTIVE") // ACTIVE, DISPATCHED, RESOLVED
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SocialFlare {
+  id        String   @id @default(uuid())
+  userId    String
+  x         Float
+  z         Float
+  intensity Float
+  createdAt DateTime @default(now())
+}
+
+model Poll {
+  id        String       @id @default(uuid())
+  question  String
+  isActive  Boolean      @default(true)
+  options   PollOption[]
+  createdAt DateTime     @default(now())
+}
+
+model PollOption {
+  id      String @id @default(uuid())
+  poll    Poll   @relation(fields: [pollId], references: [id])
+  pollId  String
+  label   String
+  votes   Int    @default(0)
+}
+
+model Seat {
+  id        String   @id @default(uuid())
+  label     String   @unique // e.g., "Grandstand-A-12"
+  x         Float
+  y         Float
+  z         Float
+  standName String
+  reserved  Boolean  @default(false)
+}
+
+model Location {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+  x         Float
+  y         Float
+  z         Float
+  rotation  Float    @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model LocationHistory {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  x         Float
+  y         Float
+  z         Float
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model SocialGraph {
+  id         String       @id @default(uuid())
+  sender     User         @relation("SentRequests", fields: [senderId], references: [id])
+  senderId   String
+  receiver   User         @relation("ReceivedRequests", fields: [receiverId], references: [id])
+  receiverId String
+  status     String @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt  DateTime     @default(now())
+
+  @@unique([senderId, receiverId])
+  @@index([senderId, status])
+  @@index([receiverId, status])
+}
+
+model NavigationState {
+  id            String   @id @default(uuid())
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String   @unique
+  activeRouteId String?  // ID of the target (stall/restroom)
+  updatedAt     DateTime @updatedAt
+}
+
+model NavMeshOverride {
+  id              String   @id @default(uuid())
+  blockId         String   @unique // e.g. "Section-North-Lower"
+  coordinatesJson String   
+  isActive        Boolean  @default(true)
+  adminNote       String?
+  updatedAt       DateTime @updatedAt
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  guestId       String                      // localStorage uid or userId
+  stallId       String
+  stallName     String
+  seatLabel     String
+  status        String      @default("PENDING")  // PENDING | PREPARING | DELIVERING | DELIVERED | CANCELLED
+  paymentMethod String      @default("UPI")       // UPI | CARD | CASH
+  paymentStatus String      @default("PAID")
+  totalAmount   Float
+  notes         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   String
+  menuItemId String
+  name      String
+  emoji     String
+  price     Float
+  quantity  Int
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  userId    String   @default("guest-anon")
+  userName  String
+  text      String
+  time      String
+  createdAt DateTime @default(now())
+}
