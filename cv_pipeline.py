@@ -1,6 +1,7 @@
 import cv2
 import time
 import requests
+import os
 import numpy as np
 from ultralytics import YOLO
 
@@ -10,7 +11,7 @@ from ultralytics import YOLO
 
 # Configuration
 CCTV_URL = "0"  # Can be an RTSP stream: "rtsp://username:password@camera_ip:554/stream"
-SERVER_URL = "http://localhost:3002/api/cv/upload-frame"
+SERVER_URL = os.getenv("STADIANAV_SERVER_URL", "http://localhost:3002/api/cv/upload-frame")
 MODEL_PATH = "yolov8n.pt"  # Pre-trained Nano YOLOv8 model for maximum FPS
 
 # Wait time simulation constants

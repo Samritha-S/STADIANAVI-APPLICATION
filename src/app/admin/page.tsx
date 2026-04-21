@@ -391,7 +391,8 @@ const SocialView = ({ socialFeed, handleNotifyUser, handleDeletePost }: { social
 const RoutingView = ({ sections, setSections }: { sections: Section[]; setSections: React.Dispatch<React.SetStateAction<Section[]>> }) => {
   const toggleSection = async (id: string, active: boolean) => {
     try {
-      await fetch('http://localhost:3002/api/admin/toggle-section', {
+      const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://127.0.0.1:3002";
+      await fetch(`${baseUrl}/api/admin/toggle-section`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ blockId: id, isActive: active })
@@ -551,7 +552,8 @@ const NerveCentreDashboard = () => {
 
   useEffect(() => {
      // 2. Real-time Admin Sync
-     const socket = io("http://127.0.0.1:3002");
+     const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://127.0.0.1:3002";
+     const socket = io(socketUrl);
      socketRef.current = socket;
      
      socket.on("connect", () => {

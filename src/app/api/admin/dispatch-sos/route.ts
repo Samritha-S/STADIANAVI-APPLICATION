@@ -101,7 +101,8 @@ export async function POST(req: Request) {
 
     // 2. Proactively tunnel to Sync Server (Port 3002) for real-time socket emit
     try {
-        await fetch("http://127.0.0.1:3002/api/admin/dispatch-sos", {
+        const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://127.0.0.1:3002";
+        await fetch(`${baseUrl}/api/admin/dispatch-sos`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ alertId, userId, action: 'DISPATCH', message: interventionRoute })
