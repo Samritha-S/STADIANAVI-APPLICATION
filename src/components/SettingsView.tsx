@@ -118,10 +118,10 @@ export const SettingsView = ({ visible }: { visible: boolean }) => {
                         {activeTab === 'profile' && (
                             <div className="space-y-8 fade-in">
                                 {/* Profile Picture */}
-                                <div className="flex items-center gap-6">
+                                <div className="flex flex-col md:flex-row items-center gap-6 p-6 rounded-2xl bg-white/[0.02] border border-white/5">
                                     <div 
                                         onClick={() => document.getElementById('avatar-upload')?.click()}
-                                        className="w-24 h-24 rounded-full border-2 border-dashed flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-white/5 transition-all group relative overflow-hidden"
+                                        className="w-24 h-24 md:w-28 md:h-28 rounded-full border-2 border-dashed flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-white/5 transition-all group relative overflow-hidden shrink-0"
                                         style={{ borderColor: `${accentColor}40` }}
                                     >
                                         {avatarUrl ? (
@@ -143,9 +143,9 @@ export const SettingsView = ({ visible }: { visible: boolean }) => {
                                             }}
                                         />
                                     </div>
-                                    <div>
-                                        <h3 className="text-lg font-black uppercase tracking-wider text-white">Avatar Image</h3>
-                                        <p className="text-xs text-white/40 mt-1">At least 800x800 px recommended. JPG or PNG is allowed.</p>
+                                    <div className="text-center md:text-left">
+                                        <h3 className="text-lg font-black uppercase tracking-wider text-white italic">Spectator Identity</h3>
+                                        <p className="text-xs text-white/40 mt-1 max-w-[200px] md:max-w-none mx-auto md:mx-0">High resolution avatar recommended (JPG/PNG).</p>
                                     </div>
                                 </div>
 

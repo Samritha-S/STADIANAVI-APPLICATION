@@ -232,8 +232,10 @@ export const DeliveryModal: React.FC<DeliveryModalProps> = ({ stall, onClose }) 
                         </>
                       ) : (
                         <button onClick={(e) => { e.stopPropagation(); adjust(item, 1); }}
-                          className="w-10 h-10 rounded-xl bg-white/5 border border-white/15 hover:border-white/40 hover:bg-white/10 flex items-center justify-center transition-all group-hover:scale-110 cursor-pointer shadow-sm relative z-[225]">
-                          <Plus size={18} className="text-white" />
+                          className="px-4 py-2 rounded-xl bg-white/5 border border-white/15 hover:border-white/40 hover:bg-white/10 flex items-center gap-2 transition-all group-hover:scale-105 cursor-pointer shadow-sm relative z-[225]"
+                        >
+                          <span className="text-[10px] font-black uppercase tracking-widest text-white/60">Add</span>
+                          <Plus size={14} className="text-white" />
                         </button>
                       )}
                     </div>
@@ -242,18 +244,21 @@ export const DeliveryModal: React.FC<DeliveryModalProps> = ({ stall, onClose }) 
               })}
             </div>
 
-            {/* Cart bar */}
+            {/* Cart bar - Sticky for mobile ease */}
             {cartCount > 0 && (
-              <div className="px-5 py-4 border-t border-white/[0.06] shrink-0 animate-in slide-in-from-bottom duration-500 relative z-[510]">
+              <div className="px-4 py-4 md:px-5 md:py-4 border-t border-white/[0.06] shrink-0 animate-in slide-in-from-bottom duration-500 relative z-[510] bg-black/60 backdrop-blur-md">
                 <button onClick={() => setStep('cart')}
                   className="w-full py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-between px-6 transition-all hover:scale-[1.02] active:scale-95 shadow-xl group relative overflow-hidden"
                   style={{ backgroundColor: accentColor, color: '#000', boxShadow: `0 10px 40px ${accentColor}40` }}>
                   <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:animate-[shimmer_2s_infinite] pointer-events-none" />
-                  <span className="flex items-center gap-3 relative z-10">
+                  <div className="flex items-center gap-3 relative z-10">
                     <ShoppingCart size={18} className="animate-bounce" /> 
-                    {cartCount} item{cartCount > 1 ? 's' : ''} added
+                    <span className="text-xs">{cartCount} {cartCount > 1 ? 'Items' : 'Item'}</span>
+                  </div>
+                  <span className="relative z-10 font-black flex items-center gap-2">
+                    ₹{cartTotal} 
+                    <ChevronLeft size={16} className="rotate-180" />
                   </span>
-                  <span className="relative z-10 font-black">₹{cartTotal} → View Cart</span>
                 </button>
               </div>
             )}

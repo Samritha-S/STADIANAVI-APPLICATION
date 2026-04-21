@@ -149,21 +149,21 @@ export const FanZoneView = ({ visible }: { visible: boolean }) => {
     return (
         <div className="fixed inset-0 lg:top-24 lg:left-8 lg:right-8 lg:bottom-12 z-[300] flex items-center justify-center p-0 lg:p-0 bg-black/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none pointer-events-none">
             <div className={`w-full h-full bg-[#0A0A0B]/95 backdrop-blur-3xl border-white/10 lg:rounded-[32px] overflow-hidden shadow-[0_80px_160px_rgba(0,0,0,1)] pointer-events-auto flex flex-col lg:border transition-all duration-500 mt-[72px] lg:mt-0 mb-[76px] lg:mb-0 ${visible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
-                <div className="p-4 md:p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
-                    <div>
-                        <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter text-white">FanZone<span style={{color: accentColor}}>.Pulse</span></h2>
+                <div className="p-4 md:p-8 border-b border-white/5 flex gap-4 items-center bg-white/[0.02]">
+                    <div className="flex-1">
+                        <h2 className="text-xl md:text-3xl font-black uppercase tracking-tighter text-white">FanZone<span style={{color: accentColor}}>.Pulse</span></h2>
                         <div className="flex items-center gap-2 mt-1">
-                            <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_#ef4444]" />
-                            <p className="text-[10px] uppercase font-black text-white/30 tracking-[0.3em]">Stadium-Wide Sync Activated</p>
+                            <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_#ef4444]" />
+                            <p className="text-[8px] md:text-[10px] uppercase font-black text-white/30 tracking-[0.3em]">Stadium-Wide Sync Activated</p>
                         </div>
                     </div>
                 </div>
 
                 <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 overflow-y-auto lg:overflow-hidden">
                     {/* LEFT PANEL: Media & Cam */}
-                    <div className="p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col gap-6 md:gap-8 overflow-y-visible lg:overflow-y-auto scroll-smooth custom-scrollbar" style={{ willChange: 'scroll-position' }}>
+                    <div className="p-4 md:p-8 border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col gap-6 md:gap-8 overflow-y-visible lg:overflow-y-auto scroll-smooth custom-scrollbar" style={{ willChange: 'scroll-position' }}>
                         <section>
-                            <h3 className="text-[10px] font-black uppercase text-white/30 tracking-[0.2em] mb-6 flex items-center gap-2">
+                            <h3 className="text-[10px] font-black uppercase text-white/30 tracking-[0.2em] mb-4 md:mb-6 flex items-center gap-2">
                                 <div className="w-1 h-1 bg-[var(--accent)] rounded-full" />
                                 Interactive Visual Stream
                             </h3>
