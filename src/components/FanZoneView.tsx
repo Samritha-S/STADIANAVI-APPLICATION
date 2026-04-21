@@ -147,8 +147,8 @@ export const FanZoneView = ({ visible }: { visible: boolean }) => {
     const totalVotes = pollData.options.reduce((acc, o) => acc + o.votes, 0);
 
     return (
-        <div className="fixed inset-0 lg:top-24 lg:left-8 lg:right-8 lg:bottom-12 z-[300] flex items-center justify-center p-0 lg:p-0 bg-black/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none pointer-events-none">
-            <div className={`w-full h-full bg-[#0A0A0B]/95 backdrop-blur-3xl border-white/10 lg:rounded-[32px] overflow-hidden shadow-[0_80px_160px_rgba(0,0,0,1)] pointer-events-auto flex flex-col lg:border transition-all duration-500 mt-[72px] lg:mt-0 mb-[76px] lg:mb-0 ${visible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+        <div className="fixed top-[72px] bottom-[76px] inset-x-0 lg:fixed lg:inset-0 lg:top-24 lg:left-8 lg:right-8 lg:bottom-12 z-[300] flex items-center justify-center p-0 lg:p-0 bg-transparent pointer-events-none">
+            <div className={`w-full h-full bg-[#0A0A0B]/95 backdrop-blur-3xl border-white/10 lg:rounded-[32px] overflow-hidden shadow-[0_80px_160px_rgba(0,0,0,1)] pointer-events-auto flex flex-col lg:border transition-all duration-500 ${visible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
                 <div className="p-4 md:p-8 border-b border-white/5 flex gap-4 items-center bg-white/[0.02]">
                     <div className="flex-1">
                         <h2 className="text-xl md:text-3xl font-black uppercase tracking-tighter text-white">FanZone<span style={{color: accentColor}}>.Pulse</span></h2>

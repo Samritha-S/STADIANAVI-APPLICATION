@@ -77,8 +77,8 @@ export const SettingsView = ({ visible }: { visible: boolean }) => {
     if (!visible) return null;
 
     return (
-        <div className="fixed inset-0 lg:top-24 lg:left-8 lg:right-8 lg:bottom-12 z-[300] flex items-center justify-center p-0 lg:p-0 bg-black/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none pointer-events-none fade-in">
-            <div className={`w-full h-full bg-[#0A0A0B]/95 backdrop-blur-2xl border-white/10 lg:rounded-3xl flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.8)] pointer-events-auto overflow-hidden transition-all duration-500 mt-[72px] lg:mt-0 mb-[76px] lg:mb-0 ${visible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+        <div className="fixed top-[72px] bottom-[76px] inset-x-0 lg:fixed lg:inset-0 lg:top-24 lg:left-8 lg:right-8 lg:bottom-12 z-[300] flex items-center justify-center p-0 lg:p-0 bg-black/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none pointer-events-none fade-in">
+            <div className={`w-full h-full bg-[#0A0A0B]/95 backdrop-blur-2xl border-white/10 lg:rounded-3xl flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.8)] pointer-events-auto overflow-hidden transition-all duration-500 ${visible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
                 
                 {/* Header */}
                 <div className="p-8 border-b border-white/5 bg-gradient-to-br from-white/[0.02] to-transparent shrink-0">
