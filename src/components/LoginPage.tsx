@@ -30,7 +30,7 @@ export default function LoginPage() {
   };
 
   const handleAdminGuest = () => {
-    window.location.href = "/admin";
+    login({}, "admin");
   };
 
   const handleFanGuest = () => {

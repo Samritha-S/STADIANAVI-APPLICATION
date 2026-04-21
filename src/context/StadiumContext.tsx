@@ -158,6 +158,9 @@ interface StadiumContextType {
   setSocialOpen: (v: boolean) => void;
   povMode: string;
   setPovMode: (v: string) => void;
+  isAdminLoggedIn: boolean;
+  setIsAdminLoggedIn: (v: boolean) => void;
+  isAuthLoading: boolean;
 }
 
 export interface OnboardingData {
@@ -197,8 +200,10 @@ export const StadiumProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [notifications, setNotifications] = useState<Array<{ id: string, message: string, type: string, ts: string }>>([]);
   const [activeTab, setActiveTab] = useState<'map' | 'fanzone' | 'services' | 'settings'>('map');
   const [isSimulating, setIsSimulating] = useState(false);
-  const [socialOpen, setSocialOpen] = useState(false);
+  const [isSocialOpen, setIsSocialOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [userData, setUserData] = useState<any>(null);
   const [isEmergency, setIsEmergency] = useState(false);
   const [accentColor, setAccentColor] = useState('#00f2ff');
@@ -260,11 +265,19 @@ export const StadiumProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   useEffect(() => {
     const savedLogin = localStorage.getItem('stadianav-user');
+    const savedAdmin = sessionStorage.getItem('stadianav-admin');
+
     if (savedLogin) {
         setUserData(JSON.parse(savedLogin));
         setIsLoggedIn(true);
     }
+    
+    if (savedAdmin === 'true') {
+        setIsAdminLoggedIn(true);
+    }
 
+    setIsAuthLoading(false);
+    
     // Request Location for Demo
     if (typeof navigator !== 'undefined' && navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -291,12 +304,21 @@ export const StadiumProvider: React.FC<{ children: React.ReactNode }> = ({ child
     initPoll();
   }, []);
 
-  const login = async (data: any) => {
+  const login = async (data: any, mode: 'fan' | 'admin' = 'fan') => {
+    if (mode === 'admin') {
+        sessionStorage.setItem('stadianav-admin', 'true');
+        setIsAdminLoggedIn(true);
+        window.location.href = "/admin";
+        return;
+    }
+
     const user = {
         id: data.phone ? `user-${data.phone}` : `guest-${Math.random().toString(36).substr(2, 6)}`,
         name: data.phone ? "Fan" : "Guest",
         ...data
     };
+    
+    // Default to sessionStorage for better security across restarts unless explicitly asked
     localStorage.setItem('stadianav-user', JSON.stringify(user));
     setUserData(user);
     setIsLoggedIn(true);
@@ -312,8 +334,11 @@ export const StadiumProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const logout = () => {
     localStorage.removeItem('stadianav-user');
+    sessionStorage.removeItem('stadianav-admin');
     setUserData(null);
     setIsLoggedIn(false);
+    setIsAdminLoggedIn(false);
+    window.location.href = "/";
   };
   useEffect(() => {
     if (!hasHydrated) return;
@@ -574,8 +599,10 @@ export const StadiumProvider: React.FC<{ children: React.ReactNode }> = ({ child
     matchData, commentary, socialFlares,
     addSocialFlare: (flare) => setSocialFlares(prev => [...prev, flare].slice(-20)),
     emitSocket: (e, p) => socketRef.current?.emit(e, p),
-    socialOpen, setSocialOpen,
+    socialOpen: isSocialOpen, 
+    setSocialOpen: setIsSocialOpen,
     povMode, setPovMode,
+    isAdminLoggedIn, setIsAdminLoggedIn, isAuthLoading
   };
 
   return (

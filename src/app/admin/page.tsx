@@ -515,6 +515,7 @@ const OrdersView = ({ orders, setOrders }: { orders: Order[]; setOrders: React.D
 
 // --------------- Main Dashboard ---------------
 const NerveCentreDashboard = () => {
+  const { isAdminLoggedIn, isAuthLoading } = useStadium();
   const [activeTab, setActiveTab] = useState<NavTab>('overview');
   const [time, setTime] = useState<string>('');
   const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -526,6 +527,19 @@ const NerveCentreDashboard = () => {
     { id: 'East-Exit-Gate-4', active: true },
   ]);
   const [sosAlerts, setSosAlerts] = useState<SosAlert[]>([]);
+
+  if (isAuthLoading) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-red-500/20 border-t-red-500 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!isAdminLoggedIn) {
+    if (typeof window !== 'undefined') window.location.href = "/";
+    return null;
+  }
 
   const handleDispatch = async (alertId: string, userId: string, seatLabel?: string) => {
      try {
