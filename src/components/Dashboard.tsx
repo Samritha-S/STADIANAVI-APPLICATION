@@ -156,7 +156,7 @@ export const Dashboard = () => {
                         className={`flex flex-col items-center gap-1 transition-all ${activeTab === tab.id ? 'text-[var(--accent)]' : 'text-white/20'}`}
                     >
                         <div className={`p-2.5 rounded-xl ${activeTab === tab.id ? 'bg-[var(--accent-10)] border border-[var(--accent-30)]' : 'bg-white/5'}`}>
-                            {React.cloneElement(tab.icon as React.ReactElement, { size: 20 })}
+                            {React.cloneElement(tab.icon as React.ReactElement<any>, { size: 20 })}
                         </div>
                         <span className="text-[8px] font-black uppercase tracking-widest">{tab.label}</span>
                     </button>

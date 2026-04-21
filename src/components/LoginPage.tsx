@@ -30,7 +30,7 @@ export default function LoginPage() {
   };
 
   const handleAdminGuest = () => {
-    login({}, "admin");
+    login({ guest: true } as any);
   };
 
   const handleFanGuest = () => {
