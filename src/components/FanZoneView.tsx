@@ -148,8 +148,8 @@ export const FanZoneView = ({ visible }: { visible: boolean }) => {
 
     return (
         <div className="fixed inset-0 lg:top-24 lg:left-8 lg:right-8 lg:bottom-12 z-[300] flex items-center justify-center p-0 lg:p-0 bg-black/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none pointer-events-none">
-            <div className="w-full h-full bg-[#0A0A0B]/95 backdrop-blur-3xl border-white/10 lg:rounded-[32px] overflow-hidden shadow-[0_80px_160px_rgba(0,0,0,1)] pointer-events-auto flex flex-col lg:border animate-in fade-in zoom-in-95 duration-700">
-                <div className="p-6 md:p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+            <div className={`w-full h-full bg-[#0A0A0B]/95 backdrop-blur-3xl border-white/10 lg:rounded-[32px] overflow-hidden shadow-[0_80px_160px_rgba(0,0,0,1)] pointer-events-auto flex flex-col lg:border transition-all duration-500 mt-[72px] lg:mt-0 mb-[76px] lg:mb-0 ${visible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+                <div className="p-4 md:p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
                     <div>
                         <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter text-white">FanZone<span style={{color: accentColor}}>.Pulse</span></h2>
                         <div className="flex items-center gap-2 mt-1">
@@ -159,9 +159,9 @@ export const FanZoneView = ({ visible }: { visible: boolean }) => {
                     </div>
                 </div>
 
-                <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
+                <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 overflow-y-auto lg:overflow-hidden">
                     {/* LEFT PANEL: Media & Cam */}
-                    <div className="p-8 border-r border-white/5 flex flex-col gap-8 overflow-y-auto scroll-smooth custom-scrollbar" style={{ willChange: 'scroll-position' }}>
+                    <div className="p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col gap-6 md:gap-8 overflow-y-visible lg:overflow-y-auto scroll-smooth custom-scrollbar" style={{ willChange: 'scroll-position' }}>
                         <section>
                             <h3 className="text-[10px] font-black uppercase text-white/30 tracking-[0.2em] mb-6 flex items-center gap-2">
                                 <div className="w-1 h-1 bg-[var(--accent)] rounded-full" />
@@ -297,8 +297,8 @@ export const FanZoneView = ({ visible }: { visible: boolean }) => {
                     </div>
 
                     {/* RIGHT PANEL: Live Chat */}
-                    <div className="flex flex-col bg-white/[0.01] h-full overflow-hidden">
-                        <div className="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.02] shrink-0">
+                    <div className="flex flex-col bg-white/[0.01] h-[500px] lg:h-full overflow-hidden shrink-0 lg:shrink">
+                        <div className="p-6 md:p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.02] shrink-0">
                             <div className="flex flex-col">
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 flex items-center gap-2">
                                     <Radio size={14} className="text-red-500" />
@@ -341,8 +341,8 @@ export const FanZoneView = ({ visible }: { visible: boolean }) => {
                             <div id="chat-end" />
                         </div>
 
-                        <div className="px-8 py-6 border-t border-white/5 bg-black/80 backdrop-blur-3xl shrink-0 relative z-[500] shadow-[0_-20px_60px_rgba(0,0,0,0.5)]">
-                            <div className="flex gap-4 items-center bg-white/[0.04] p-2 rounded-[28px] border border-white/10 ring-1 ring-white/5 shadow-2xl relative max-w-[95%] ml-auto focus-within:border-[var(--accent-40)] transition-all">
+                        <div className="px-4 py-4 md:px-8 md:py-6 border-t border-white/5 bg-black/80 backdrop-blur-3xl shrink-0 relative z-[500] shadow-[0_-20px_60px_rgba(0,0,0,0.5)]">
+                            <div className="flex gap-2 md:gap-4 items-center bg-white/[0.04] p-1.5 md:p-2 rounded-[24px] md:rounded-[28px] border border-white/10 ring-1 ring-white/5 shadow-2xl relative max-w-[98%] ml-auto focus-within:border-[var(--accent-40)] transition-all">
                                 <input 
                                     type="text" 
                                     value={chatMsg}

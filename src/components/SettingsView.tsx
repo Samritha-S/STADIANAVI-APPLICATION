@@ -77,8 +77,8 @@ export const SettingsView = ({ visible }: { visible: boolean }) => {
     if (!visible) return null;
 
     return (
-        <div className="fixed top-[120px] inset-x-0 bottom-0 z-[300] flex items-center justify-center p-8 bg-black/60 backdrop-blur-md pointer-events-none fade-in">
-            <div className="w-[800px] h-full bg-[#0A0A0B]/95 backdrop-blur-2xl border border-white/10 rounded-3xl flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.8)] pointer-events-auto overflow-hidden animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 lg:top-24 lg:left-8 lg:right-8 lg:bottom-12 z-[300] flex items-center justify-center p-0 lg:p-0 bg-black/80 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none pointer-events-none fade-in">
+            <div className={`w-full h-full bg-[#0A0A0B]/95 backdrop-blur-2xl border-white/10 lg:rounded-3xl flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.8)] pointer-events-auto overflow-hidden transition-all duration-500 mt-[72px] lg:mt-0 mb-[76px] lg:mb-0 ${visible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
                 
                 {/* Header */}
                 <div className="p-8 border-b border-white/5 bg-gradient-to-br from-white/[0.02] to-transparent shrink-0">
@@ -93,28 +93,28 @@ export const SettingsView = ({ visible }: { visible: boolean }) => {
                     </div>
                 </div>
 
-                <div className="flex flex-1 overflow-hidden">
+                <div className="flex flex-1 flex-col lg:flex-row overflow-hidden">
                     {/* Sidebar Nav */}
-                    <div className="w-64 border-r border-white/5 p-6 flex flex-col gap-2 shrink-0">
-                        <button onClick={() => setActiveTab('profile')} className={`flex items-center gap-3 px-4 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'profile' ? 'bg-white/10 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}>
-                            <User size={16} /> Identity Details
+                    <div className="flex lg:flex-col overflow-x-auto lg:overflow-x-visible lg:w-64 border-b lg:border-b-0 lg:border-r border-white/5 p-4 lg:p-6 gap-2 shrink-0 custom-scrollbar">
+                        <button onClick={() => setActiveTab('profile')} className={`flex items-center gap-3 px-4 py-3 lg:py-4 rounded-xl text-[10px] lg:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'profile' ? 'bg-white/10 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}>
+                            <User className="w-3.5 h-3.5 lg:w-4 lg:h-4" /> Identity
                         </button>
-                        <button onClick={() => setActiveTab('preferences')} className={`flex items-center gap-3 px-4 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'preferences' ? 'bg-white/10 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}>
-                            <Palette size={16} /> Preferences
+                        <button onClick={() => setActiveTab('preferences')} className={`flex items-center gap-3 px-4 py-3 lg:py-4 rounded-xl text-[10px] lg:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'preferences' ? 'bg-white/10 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}>
+                            <Palette className="w-3.5 h-3.5 lg:w-4 lg:h-4" /> Preferences
                         </button>
-                        <button onClick={() => setActiveTab('notifications')} className={`flex items-center gap-3 px-4 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'notifications' ? 'bg-white/10 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}>
-                            <Bell size={16} /> Notification Rules
+                        <button onClick={() => setActiveTab('notifications')} className={`flex items-center gap-3 px-4 py-3 lg:py-4 rounded-xl text-[10px] lg:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'notifications' ? 'bg-white/10 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}>
+                            <Bell className="w-3.5 h-3.5 lg:w-4 lg:h-4" /> Rules
                         </button>
-                        <button onClick={() => setActiveTab('payments')} className={`flex items-center gap-3 px-4 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'payments' ? 'bg-white/10 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}>
-                            <CreditCard size={16} /> Saved Payment Methods
+                        <button onClick={() => setActiveTab('payments')} className={`flex items-center gap-3 px-4 py-3 lg:py-4 rounded-xl text-[10px] lg:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'payments' ? 'bg-white/10 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}>
+                            <CreditCard className="w-3.5 h-3.5 lg:w-4 lg:h-4" /> Payments
                         </button>
-                        <button onClick={() => setActiveTab('security')} className={`flex items-center gap-3 px-4 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all mt-auto ${activeTab === 'security' ? 'bg-white/10 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}>
-                            <Shield size={16} /> Privacy & Security
+                        <button onClick={() => setActiveTab('security')} className={`flex items-center gap-3 px-4 py-3 lg:py-4 rounded-xl text-[10px] lg:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap lg:mt-auto ${activeTab === 'security' ? 'bg-white/10 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}>
+                            <Shield className="w-3.5 h-3.5 lg:w-4 lg:h-4" /> Security
                         </button>
                     </div>
 
                     {/* Content Area */}
-                    <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                    <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
                         {activeTab === 'profile' && (
                             <div className="space-y-8 fade-in">
                                 {/* Profile Picture */}
@@ -149,7 +149,7 @@ export const SettingsView = ({ visible }: { visible: boolean }) => {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40">First Name</label>
                                         <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-white transition-colors" />
@@ -158,12 +158,12 @@ export const SettingsView = ({ visible }: { visible: boolean }) => {
                                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Last Name</label>
                                         <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-white transition-colors" />
                                     </div>
-                                    <div className="space-y-2 col-span-2">
+                                    <div className="space-y-2 md:col-span-2">
                                         <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Email Address</label>
                                         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-white transition-colors" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Seat Registration (Section/Row/Num)</label>
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Seat Registration</label>
                                         <input type="text" value={seat} onChange={(e) => setSeat(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-white transition-colors" />
                                     </div>
                                     <div className="space-y-2">

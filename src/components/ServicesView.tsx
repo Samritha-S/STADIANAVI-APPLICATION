@@ -22,26 +22,26 @@ export const ServicesView = ({ visible }: { visible: boolean }) => {
 
     return (
         <>
-            <div className="fixed inset-0 lg:inset-auto lg:top-24 lg:right-8 lg:bottom-28 lg:w-[450px] z-[300] flex flex-col pointer-events-none">
-                <div className="w-full h-full bg-[#0A0A0B]/80 backdrop-blur-3xl border border-white/10 lg:rounded-[32px] flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.9)] pointer-events-auto animate-in slide-in-from-right-10 duration-700 overflow-hidden relative">
+            <div className={`fixed inset-0 lg:inset-auto lg:top-24 lg:right-8 lg:bottom-28 lg:w-[450px] z-[300] flex flex-col pointer-events-none transition-all duration-500 ${visible ? 'translate-y-0 opacity-100' : 'translate-y-full lg:translate-y-0 lg:translate-x-12 opacity-0'}`}>
+                <div className="w-full h-full bg-[#0A0A0B]/80 backdrop-blur-3xl border-x lg:border border-white/10 lg:rounded-[32px] flex flex-col shadow-[0_40px_100px_rgba(0,0,0,0.9)] pointer-events-auto overflow-hidden relative mt-[72px] lg:mt-0 mb-[76px] lg:mb-0">
                     {/* Glossy Header */}
-                    <div className="p-8 pb-6 border-b border-white/5 relative overflow-hidden">
+                    <div className="p-5 md:p-8 pb-4 md:pb-6 border-b border-white/5 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent)] opacity-5 blur-3xl" />
-                        <div className="flex items-center gap-5 relative z-10">
-                            <div className="w-14 h-14 bg-[var(--accent-10)] rounded-2xl flex items-center justify-center border border-[var(--accent-20)] shadow-[0_0_20px_var(--accent-10)]">
-                                <Utensils className="text-[var(--accent)]" size={28} />
+                        <div className="flex items-center gap-3 md:gap-5 relative z-10">
+                            <div className="w-10 h-10 md:w-14 md:h-14 bg-[var(--accent-10)] rounded-xl md:rounded-2xl flex items-center justify-center border border-[var(--accent-20)] shadow-[0_0_20px_var(--accent-10)]">
+                                <Utensils className="text-[var(--accent)] w-5 h-5 md:w-7 md:h-7" />
                             </div>
                             <div>
-                                <h2 className="text-3xl font-black uppercase tracking-tighter text-white leading-none">Services</h2>
-                                <div className="flex items-center gap-2 mt-2">
-                                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_#10b981]" style={{ willChange: 'opacity' }} />
-                                    <p className="text-[9px] uppercase font-black text-white/40 tracking-[0.3em]">Operational Nodes Optimized</p>
+                                <h2 className="text-xl md:text-3xl font-black uppercase tracking-tighter text-white leading-none">Services</h2>
+                                <div className="flex items-center gap-2 mt-1 md:mt-2">
+                                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_#10b981]" />
+                                    <p className="text-[7px] md:text-[9px] uppercase font-black text-white/40 tracking-[0.2em] md:tracking-[0.3em]">Operational Nodes Optimized</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto scroll-smooth p-6 md:p-8 space-y-10 custom-scrollbar relative" style={{ willChange: 'scroll-position' }}>
+                    <div className="flex-1 overflow-y-auto scroll-smooth p-4 md:p-8 space-y-6 md:space-y-10 custom-scrollbar relative">
                         {/* Food Stalls */}
                         <section>
                             <div className="flex items-center justify-between mb-6">

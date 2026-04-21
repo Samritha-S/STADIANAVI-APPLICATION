@@ -120,14 +120,14 @@ const AppContent = () => {
 
             {/* Tactical FAB Stack (Right Side) - Hidden when map is not the primary focus */}
             {activeTab === 'map' && (
-                <div className="fixed bottom-32 right-6 z-[200] flex flex-col gap-6 items-center pointer-events-auto animate-in fade-in slide-in-from-right-10 duration-500">
+                <div className="fixed bottom-24 lg:bottom-32 right-4 lg:right-6 z-[200] flex flex-col gap-4 lg:gap-6 items-center pointer-events-auto animate-in fade-in slide-in-from-right-10 duration-500">
                     <button 
                         onClick={() => setSosOpen(true)}
-                        className="w-14 h-14 bg-[#0A0A0B]/80 backdrop-blur-md rounded-full border border-red-500/50 flex items-center justify-center text-red-500 shadow-[0_0_20px_rgba(220,38,38,0.2)] hover:bg-red-500 hover:text-white transition-all hover:scale-110 group relative"
+                        className="w-12 h-12 lg:w-14 lg:h-14 bg-[#0A0A0B]/80 backdrop-blur-md rounded-full border border-red-500/50 flex items-center justify-center text-red-500 shadow-[0_0_20px_rgba(220,38,38,0.2)] hover:bg-red-500 hover:text-white transition-all hover:scale-110 group relative"
                     >
-                        <ShieldAlert size={22} className="group-hover:animate-ping absolute opacity-0 group-hover:opacity-100" />
-                        <ShieldAlert size={22} className="relative z-10" />
-                        <span className="absolute right-full mr-4 px-3 py-1 bg-black/80 backdrop-blur-md border border-red-500/30 rounded-lg text-[10px] font-black uppercase tracking-widest text-red-500 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Emergency</span>
+                        <ShieldAlert className="w-[18px] h-[18px] lg:w-[22px] lg:h-[22px] group-hover:animate-ping absolute opacity-0 group-hover:opacity-100" />
+                        <ShieldAlert className="w-[18px] h-[18px] lg:w-[22px] lg:h-[22px] relative z-10" />
+                        <span className="hidden lg:block absolute right-full mr-4 px-3 py-1 bg-black/80 backdrop-blur-md border border-red-500/30 rounded-lg text-[10px] font-black uppercase tracking-widest text-red-500 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Emergency</span>
                     </button>
 
                     {/* FRIEND ACCESS (Social) - Yellow */}

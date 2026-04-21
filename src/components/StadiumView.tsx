@@ -335,10 +335,16 @@ const CameraController = () => {
     
     // Only set the physical camera placement on the very first start-up
     if (!hasInitialized.current) {
-        const lookDir = new THREE.Vector3(0, 0, 0).sub(eyePos).normalize();
-        if (lookDir.lengthSq() === 0) lookDir.set(0, 0, -1);
-        const lockedCamPos = eyePos.clone().sub(lookDir.multiplyScalar(0.01));
+        // Point from seat towards the centre of the pitch (0,0,0)
+        const targetPoint = new THREE.Vector3(0, 0, 0);
+        const lookDir = targetPoint.clone().sub(eyePos).normalize();
+        
+        // Position camera exactly at eye position, but look towards centre
+        // To make OrbitControls face that way, we place camera slightly behind eyePos on that line
+        const lockedCamPos = eyePos.clone().sub(lookDir.multiplyScalar(0.5)); 
         camera.position.copy(lockedCamPos);
+        controls.target.copy(eyePos); // Rotate around human head/eye
+        
         hasInitialized.current = true;
     }
     
